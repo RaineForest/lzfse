@@ -709,3 +709,25 @@ invalid_match_distance:
   }
 #endif
 }
+
+size_t lzvn_decode_buffer(void *__restrict dst, size_t dst_size,
+                          const void *__restrict src, size_t src_size)
+{
+  if (dst == NULL || src == NULL) {
+    return 0;
+  }
+
+  lzvn_decoder_state state;
+  memset(&state, 0, sizeof(lzvn_decoder_state));
+
+  state.src = src;
+  state.src_end = src + src_size;
+  state.dst = dst;
+  state.dst_begin = dst;
+  state.dst_end = dst + dst_size;
+  state.dst_current = dst;
+
+  lzvn_decode(&state);
+
+  return (size_t)(state.dst - (unsigned char*)dst);
+}
